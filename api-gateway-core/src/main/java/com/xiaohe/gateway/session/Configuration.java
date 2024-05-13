@@ -1,7 +1,8 @@
 package com.xiaohe.gateway.session;
 
-import com.xiaohe.gateway.bind.GenericReferenceRegistry;
 import com.xiaohe.gateway.bind.IGenericReference;
+import com.xiaohe.gateway.bind.MapperRegistry;
+import com.xiaohe.gateway.mapping.HttpStatement;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
@@ -15,10 +16,15 @@ import java.util.Map;
  * 会话生命周期配置项
  */
 public class Configuration {
-    private final GenericReferenceRegistry registry = new GenericReferenceRegistry(this);
+
+    private final MapperRegistry mapperRegistry = new MapperRegistry(this);
+
+    private final Map<String, HttpStatement> httpStatements = new HashMap<>();
 
     /**
-     * RPC 应用服务配置项 api-gateway-test
+     * RPC 应用服务配置项
+     * key : api-gateway-test
+     * value : 该应用的配置 ApplicationConfig
      */
     private final Map<String, ApplicationConfig> applicationConfigMap = new HashMap<>();
 
@@ -64,15 +70,23 @@ public class Configuration {
         return registryConfigMap.get(applicationName);
     }
 
-    public ReferenceConfig<GenericService> getReferenceConfig(String interfaceName) {
+    public ReferenceConfig<GenericService> getReferenceConfig(String interfaceName, String name) {
         return referenceConfigMap.get(interfaceName);
     }
 
-    public void addGenericReference(String application, String interfaceName, String methodName) {
-        registry.addGenericReference(application, interfaceName, methodName);
+    public void addMapper(HttpStatement httpStatement) {
+        mapperRegistry.addMapper(httpStatement);
     }
 
-    public IGenericReference getGenericReference(String methodName) {
-        return registry.getGenericReference(methodName);
+    public IGenericReference getMapper(String uri, GatewaySession gatewaySession) {
+        return mapperRegistry.getMapper(uri, gatewaySession);
+    }
+
+    public void addHttpStatement(HttpStatement httpStatement) {
+        httpStatements.put(httpStatement.getUri(), httpStatement);
+    }
+
+    public HttpStatement getHttpStatement(String uri) {
+        return httpStatements.get(uri);
     }
 }

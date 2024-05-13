@@ -1,4 +1,4 @@
-package com.xiaohe.gateway.session;
+package com.xiaohe.gateway.socket;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

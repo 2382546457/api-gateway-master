@@ -1,10 +1,12 @@
-package com.xiaohe.gateway.session.handler;
+package com.xiaohe.gateway.socket.handlers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.xiaohe.gateway.bind.IGenericReference;
-import com.xiaohe.gateway.session.BaseHandler;
 import com.xiaohe.gateway.session.Configuration;
+import com.xiaohe.gateway.session.GatewaySession;
+import com.xiaohe.gateway.session.defaults.DefaultGatewaySessionFactory;
+import com.xiaohe.gateway.socket.BaseHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
@@ -14,30 +16,33 @@ import org.slf4j.LoggerFactory;
 /**
  * 我们自己的数据处理器，只负责处理HTTP协议
  */
-public class SessionServerHandler extends BaseHandler<FullHttpRequest> {
+public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
-    private final Logger logger = LoggerFactory.getLogger(SessionServerHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class);
 
-    private final Configuration configuration;
+    private final DefaultGatewaySessionFactory gatewaySessionFactory;
 
-    public SessionServerHandler(Configuration configuration) {
-        this.configuration = configuration;
+    public GatewayServerHandler(DefaultGatewaySessionFactory gatewaySessionFactory) {
+        this.gatewaySessionFactory = gatewaySessionFactory;
     }
-
 
     @Override
     protected void session(ChannelHandlerContext ctx, final Channel channel, FullHttpRequest request) {
         logger.info("网关接收请求 uri：{} method：{}", request.uri(), request.method());
-        // 业务在此处完成，暂时不写
+        // 业务在此处完成，暂时写一个简单的，遇到 favicon.ico 不做处理直接返回
+        String uri = request.uri();
+        if (uri.equals("/favicon.ico")) return;
+
+        // 根据uri拿到 rpc 对应的处理器，执行后获取结果
+        GatewaySession gatewaySession = gatewaySessionFactory.openSession();
+        IGenericReference reference = gatewaySession.getMapper(uri);
+
+        String result = reference.$invoke("test");
 
         // 返回信息处理
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 
-        // 服务泛化调用, 暂时写死
-        IGenericReference reference = configuration.getGenericReference("sayHi");
-        String result = reference.$invoke("test") + " " + System.currentTimeMillis();
-
-        // 返回信息控制
+        // 将结果写入 response
         response.content().writeBytes(JSON.toJSONBytes(result, SerializerFeature.PrettyFormat));
         // 头部信息设置
         HttpHeaders heads = response.headers();
