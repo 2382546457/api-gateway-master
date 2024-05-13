@@ -10,6 +10,9 @@
   <name>api-gateway-master</name>
   <modules>
     <module>api-gateway-core</module>
+      <module>api-gateway-test</module>
   </modules>
+
+
 
 </project>
