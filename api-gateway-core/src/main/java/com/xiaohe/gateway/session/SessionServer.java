@@ -17,10 +17,16 @@ public class SessionServer implements Callable<Channel> {
     private final EventLoopGroup boss = new NioEventLoopGroup(1);
     private final EventLoopGroup work = new NioEventLoopGroup();
 
+    private Configuration configuration;
+
     /**
      * 服务端 Netty 的 channel
      */
     private Channel channel;
+
+    public SessionServer(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public Channel call() throws Exception {
@@ -30,7 +36,7 @@ public class SessionServer implements Callable<Channel> {
             serverBootstrap.group(boss, work)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
-                    .childHandler(new SessionChannelInitializer());
+                    .childHandler(new SessionChannelInitializer(configuration));
             channelFuture = serverBootstrap.bind(new InetSocketAddress(7397)).syncUninterruptibly();
             this.channel = channelFuture.channel();
         } catch (Exception e) {

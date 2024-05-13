@@ -1,12 +1,11 @@
 package com.xiaohe.gateway.test;
 
-import com.xiaohe.gateway.session.SessionServer;
+import com.xiaohe.gateway.session.Configuration;
+import com.xiaohe.gateway.session.GenericReferenceSessionFactoryBuilder;
 import io.netty.channel.Channel;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ApiTest {
@@ -14,20 +13,14 @@ public class ApiTest {
 
     @Test
     public void test() throws Exception {
-        SessionServer server = new SessionServer();
+        Configuration configuration = new Configuration();
+        configuration.addGenericReference("api-gateway-test", "com.xiaohe.gateway.rpc.IActivityBooth", "sayHi");
 
-        Future<Channel> future = Executors.newFixedThreadPool(2).submit(server);
+        GenericReferenceSessionFactoryBuilder builder = new GenericReferenceSessionFactoryBuilder();
+        Future<Channel> future = builder.build(configuration);
 
-        Channel channel = future.get();
+        logger.info("服务启动完成 {}", future.get().id());
 
-        if (channel == null) {
-            throw new RuntimeException("netty server start error channel is null");
-        }
-        while (!channel.isActive()) {
-            logger.info("NettyServer 启动服务...");
-            Thread.sleep(500);
-        }
-        logger.info("NettyServer 启动服务完成 {}.", channel.localAddress());
         Thread.sleep(Long.MAX_VALUE);
     }
 

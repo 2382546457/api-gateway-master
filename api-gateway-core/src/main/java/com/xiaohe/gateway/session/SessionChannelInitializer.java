@@ -14,6 +14,12 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
  */
 public class SessionChannelInitializer extends ChannelInitializer<SocketChannel> {
 
+    private Configuration configuration;
+
+    public SessionChannelInitializer(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
         ChannelPipeline pipeline = channel.pipeline();
@@ -23,6 +29,6 @@ public class SessionChannelInitializer extends ChannelInitializer<SocketChannel>
         // 限制HTTP消息长度
         pipeline.addLast(new HttpObjectAggregator(1024 * 1024));
         // 添加我们自己的处理器
-        pipeline.addLast(new SessionServerHandler());
+        pipeline.addLast(new SessionServerHandler(configuration));
     }
 }

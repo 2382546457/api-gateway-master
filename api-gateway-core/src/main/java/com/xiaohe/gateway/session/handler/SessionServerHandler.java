@@ -2,7 +2,9 @@ package com.xiaohe.gateway.session.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.xiaohe.gateway.bind.IGenericReference;
 import com.xiaohe.gateway.session.BaseHandler;
+import com.xiaohe.gateway.session.Configuration;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
@@ -16,6 +18,13 @@ public class SessionServerHandler extends BaseHandler<FullHttpRequest> {
 
     private final Logger logger = LoggerFactory.getLogger(SessionServerHandler.class);
 
+    private final Configuration configuration;
+
+    public SessionServerHandler(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+
     @Override
     protected void session(ChannelHandlerContext ctx, final Channel channel, FullHttpRequest request) {
         logger.info("网关接收请求 uri：{} method：{}", request.uri(), request.method());
@@ -23,8 +32,13 @@ public class SessionServerHandler extends BaseHandler<FullHttpRequest> {
 
         // 返回信息处理
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+
+        // 服务泛化调用, 暂时写死
+        IGenericReference reference = configuration.getGenericReference("sayHi");
+        String result = reference.$invoke("test") + " " + System.currentTimeMillis();
+
         // 返回信息控制
-        response.content().writeBytes(JSON.toJSONBytes("你访问路径被网关管理了 URI：" + request.uri(), SerializerFeature.PrettyFormat));
+        response.content().writeBytes(JSON.toJSONBytes(result, SerializerFeature.PrettyFormat));
         // 头部信息设置
         HttpHeaders heads = response.headers();
         // 返回内容类型
