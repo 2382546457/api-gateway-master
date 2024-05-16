@@ -1,18 +1,5 @@
 package com.xiaohe.gateway.mapping;
 
-
-/**
- * 网关接口映射信息
- * web项目中每一个接口都会被封装为 HttpStatement
- * 如 :
- *         HttpStatement httpStatement = new HttpStatement(
- *                 "api-gateway-test",
- *                 "com.xiaohe.gateway.rpc.IActivityBooth",
- *                 "sayHi",
- *                 "/wg/activity/sayHi",
- *                 HttpCommandType.GET
- *         );
- */
 public class HttpStatement {
     /**
      * 应用名称
@@ -20,24 +7,25 @@ public class HttpStatement {
     private String application;
 
     /**
-     * 服务接口全限定类名，如 com.xiaohe.service.UserService
+     * 接口全限定类名
      */
     private String interfaceName;
 
     /**
-     * 服务方法，如 getUser
+     * 方法名称
      */
     private String methodName;
 
     /**
-     * 网关接口, 该接口的路径，比如 HTTP 路径为 /user/getUser
+     * 路径
      */
     private String uri;
 
     /**
-     * 接口类型，get、post、delete...
+     * 接口类型
      */
     private HttpCommandType httpCommandType;
+
 
     public HttpStatement(String application, String interfaceName, String methodName, String uri, HttpCommandType httpCommandType) {
         this.application = application;

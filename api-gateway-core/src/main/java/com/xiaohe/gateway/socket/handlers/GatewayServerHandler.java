@@ -3,7 +3,6 @@ package com.xiaohe.gateway.socket.handlers;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.xiaohe.gateway.bind.IGenericReference;
-import com.xiaohe.gateway.session.Configuration;
 import com.xiaohe.gateway.session.GatewaySession;
 import com.xiaohe.gateway.session.defaults.DefaultGatewaySessionFactory;
 import com.xiaohe.gateway.socket.BaseHandler;
@@ -13,11 +12,7 @@ import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 我们自己的数据处理器，只负责处理HTTP协议
- */
 public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
-
     private final Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class);
 
     private final DefaultGatewaySessionFactory gatewaySessionFactory;
@@ -27,22 +22,20 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
     }
 
     @Override
-    protected void session(ChannelHandlerContext ctx, final Channel channel, FullHttpRequest request) {
-        logger.info("网关接收请求 uri：{} method：{}", request.uri(), request.method());
-        // 业务在此处完成，暂时写一个简单的，遇到 favicon.ico 不做处理直接返回
+    protected void session(ChannelHandlerContext ctx, Channel channel, FullHttpRequest request) {
+        logger.info("网关接收请求, uri: {}, method: {}", request.uri(), request.method());
+        // 模拟业务的处理
         String uri = request.uri();
-        if (uri.equals("/favicon.ico")) return;
+        if (uri.equals("/favicon.ico")) {
+            return;
+        }
+        GatewaySession gatewaySession = gatewaySessionFactory.openSession(uri);
+        IGenericReference reference = gatewaySession.getMapper();
+        String result = reference.$invoke("test") + " " + System.currentTimeMillis();
 
-        // 根据uri拿到 rpc 对应的处理器，执行后获取结果
-        GatewaySession gatewaySession = gatewaySessionFactory.openSession();
-        IGenericReference reference = gatewaySession.getMapper(uri);
-
-        String result = reference.$invoke("test");
-
-        // 返回信息处理
+        // 构造响应
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-
-        // 将结果写入 response
+        // 设置回写数据，写回数据为json格式
         response.content().writeBytes(JSON.toJSONBytes(result, SerializerFeature.PrettyFormat));
         // 头部信息设置
         HttpHeaders heads = response.headers();
@@ -60,5 +53,4 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
         channel.writeAndFlush(response);
     }
-
 }

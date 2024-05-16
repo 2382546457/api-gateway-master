@@ -1,6 +1,5 @@
 package com.xiaohe.gateway.bind;
 
-
 /**
  * 统一泛化调用接口
  */
