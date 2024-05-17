@@ -6,6 +6,7 @@ import com.xiaohe.gateway.session.Configuration;
 import com.xiaohe.gateway.session.GatewaySession;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * 绑定调用方法
@@ -23,7 +24,7 @@ public class MapperMethod {
         this.command = configuration.getHttpStatement(uri).getHttpCommandType();
     }
 
-    public Object execute(GatewaySession session, Object args) {
+    public Object execute(GatewaySession session, Map<String, Object> args) {
         Object result = null;
         switch (command) {
             case GET:

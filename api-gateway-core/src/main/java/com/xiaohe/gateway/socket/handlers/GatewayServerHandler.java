@@ -6,11 +6,14 @@ import com.xiaohe.gateway.bind.IGenericReference;
 import com.xiaohe.gateway.session.GatewaySession;
 import com.xiaohe.gateway.session.defaults.DefaultGatewaySessionFactory;
 import com.xiaohe.gateway.socket.BaseHandler;
+import com.xiaohe.gateway.socket.agreement.RequestParser;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
     private final Logger logger = LoggerFactory.getLogger(GatewayServerHandler.class);
@@ -24,14 +27,16 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
     @Override
     protected void session(ChannelHandlerContext ctx, Channel channel, FullHttpRequest request) {
         logger.info("网关接收请求, uri: {}, method: {}", request.uri(), request.method());
-        // 模拟业务的处理
+        // 解析参数
+        Map<String, Object> requestObj = new RequestParser(request).parse();
+        // 拿到uri(数据可能在后面，切割一下只要路径)
         String uri = request.uri();
-        if (uri.equals("/favicon.ico")) {
-            return;
-        }
+        int idx = uri.indexOf("?");
+        uri = idx > 0 ? uri.substring(0, idx) : uri;
+        // 拿到对应uri的session
         GatewaySession gatewaySession = gatewaySessionFactory.openSession(uri);
         IGenericReference reference = gatewaySession.getMapper();
-        String result = reference.$invoke("test") + " " + System.currentTimeMillis();
+        String result = reference.$invoke(requestObj);
 
         // 构造响应
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);

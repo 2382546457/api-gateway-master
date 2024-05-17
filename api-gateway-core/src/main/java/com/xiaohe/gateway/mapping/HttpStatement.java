@@ -17,6 +17,11 @@ public class HttpStatement {
     private String methodName;
 
     /**
+     * 参数类型 (RPC限制只能使用单参数)
+     */
+    private String parameterType;
+
+    /**
      * 路径
      */
     private String uri;
@@ -53,5 +58,17 @@ public class HttpStatement {
 
     public HttpCommandType getHttpCommandType() {
         return httpCommandType;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
+    public String getParameterType() {
+        return parameterType;
+    }
+
+    public void setParameterType(String parameterType) {
+        this.parameterType = parameterType;
     }
 }
