@@ -3,6 +3,7 @@ package com.xiaohe.gateway.session.defaults;
 import com.xiaohe.gateway.bind.IGenericReference;
 import com.xiaohe.gateway.datasource.Connection;
 import com.xiaohe.gateway.datasource.DataSource;
+import com.xiaohe.gateway.executor.Executor;
 import com.xiaohe.gateway.mapping.HttpStatement;
 import com.xiaohe.gateway.session.Configuration;
 import com.xiaohe.gateway.session.GatewaySession;
@@ -16,12 +17,12 @@ public class DefaultGatewaySession implements GatewaySession {
 
     private String uri;
 
-    private DataSource dataSource;
+    private Executor executor;
 
-    public DefaultGatewaySession(Configuration configuration, String uri, DataSource dataSource) {
+    public DefaultGatewaySession(Configuration configuration, String uri, Executor executor) {
         this.configuration = configuration;
         this.uri = uri;
-        this.dataSource = dataSource;
+        this.executor = executor;
     }
 
     /**
@@ -32,18 +33,18 @@ public class DefaultGatewaySession implements GatewaySession {
      */
     @Override
     public Object get(String methodName, Map<String, Object> params) {
-        Connection connection = dataSource.getConnection();
         HttpStatement httpStatement = configuration.getHttpStatement(uri);
-
-        String parameterType = httpStatement.getParameterType();
-        return connection.execute(
-                methodName,
-                new String[]{parameterType},
-                new String[]{"ignore"},
-                SimpleTypeRegistry.isSimpleType(parameterType) ? params.values().toArray() : new Object[]{params}
-        );
+        try {
+            return executor.exec(httpStatement, params);
+        } catch (Exception e) {
+            throw new RuntimeException("Error exec get. Cause : " + e);
+        }
     }
 
+    @Override
+    public Object post(String methodName, Map<String, Object> params) {
+        return get(methodName, params);
+    }
 
     @Override
     public Configuration getConfiguration() {

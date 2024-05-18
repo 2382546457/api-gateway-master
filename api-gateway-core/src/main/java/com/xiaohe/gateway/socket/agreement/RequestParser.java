@@ -85,4 +85,15 @@ public class RequestParser {
             return contentType;
         }
     }
+
+    /**
+     * 简单处理请求路径
+     */
+    public String getUri() {
+        String uri = request.uri();
+        int idx = uri.indexOf("?");
+        uri = idx > 0 ? uri.substring(0, idx) : uri;
+        if (uri.equals("/favicon.ico")) return null;
+        return uri;
+    }
 }

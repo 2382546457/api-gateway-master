@@ -3,6 +3,7 @@ package com.xiaohe.gateway.session.defaults;
 import com.xiaohe.gateway.datasource.DataSource;
 import com.xiaohe.gateway.datasource.DataSourceFactory;
 import com.xiaohe.gateway.datasource.unpooled.UnpooledDataSourceFactory;
+import com.xiaohe.gateway.executor.Executor;
 import com.xiaohe.gateway.session.Configuration;
 import com.xiaohe.gateway.session.GatewaySession;
 import com.xiaohe.gateway.session.GatewaySessionFactory;
@@ -22,9 +23,11 @@ public class DefaultGatewaySessionFactory implements GatewaySessionFactory {
      */
     @Override
     public GatewaySession openSession(String uri) {
-        DataSourceFactory dataSourceFactory = new UnpooledDataSourceFactory();
+        UnpooledDataSourceFactory dataSourceFactory = new UnpooledDataSourceFactory();
         dataSourceFactory.setProperties(configuration, uri);
         DataSource dataSource = dataSourceFactory.getDataSource();
-        return new DefaultGatewaySession(configuration, uri, dataSource);
+        // 创建执行器
+        Executor executor = configuration.newExecutor(dataSource.getConnection());
+        return new DefaultGatewaySession(configuration, uri, executor);
     }
 }

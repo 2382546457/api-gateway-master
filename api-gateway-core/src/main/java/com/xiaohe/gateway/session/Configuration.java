@@ -2,11 +2,15 @@ package com.xiaohe.gateway.session;
 
 import com.xiaohe.gateway.bind.IGenericReference;
 import com.xiaohe.gateway.bind.MapperRegistry;
+import com.xiaohe.gateway.datasource.Connection;
+import com.xiaohe.gateway.executor.Executor;
+import com.xiaohe.gateway.executor.SimpleExecutor;
 import com.xiaohe.gateway.mapping.HttpStatement;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.rpc.service.GenericService;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,5 +81,8 @@ public class Configuration {
     }
     public HttpStatement getHttpStatement(String uri) {
         return this.httpStatements.get(uri);
+    }
+    public Executor newExecutor(Connection connection) {
+        return new SimpleExecutor(this, connection);
     }
 }
