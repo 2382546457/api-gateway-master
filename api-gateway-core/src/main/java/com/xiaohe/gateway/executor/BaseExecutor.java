@@ -2,7 +2,7 @@ package com.xiaohe.gateway.executor;
 
 import com.alibaba.fastjson.JSON;
 import com.xiaohe.gateway.datasource.Connection;
-import com.xiaohe.gateway.executor.result.GatewayResult;
+import com.xiaohe.gateway.executor.result.SessionResult;
 import com.xiaohe.gateway.mapping.HttpStatement;
 import com.xiaohe.gateway.session.Configuration;
 import com.xiaohe.gateway.type.SimpleTypeRegistry;
@@ -24,7 +24,7 @@ public abstract class BaseExecutor implements Executor{
     }
 
     @Override
-    public GatewayResult exec(HttpStatement httpStatement, Map<String, Object> params) throws Exception {
+    public SessionResult exec(HttpStatement httpStatement, Map<String, Object> params) throws Exception {
         // 参数处理
         String methodName = httpStatement.getMethodName();
         String parameterType = httpStatement.getParameterType();
@@ -33,9 +33,9 @@ public abstract class BaseExecutor implements Executor{
         logger.info("执行调用 method：{}#{}.{}({}) args：{}", httpStatement.getApplication(), httpStatement.getInterfaceName(), httpStatement.getMethodName(), JSON.toJSONString(parameterTypes), JSON.toJSONString(args));
         try {
             Object result = doExec(methodName, parameterTypes, args);
-            return GatewayResult.buildSuccess(result);
+            return SessionResult.buildSuccess(result);
         }catch (Exception e){
-            return GatewayResult.buildError(e.getMessage());
+            return SessionResult.buildError(e.getMessage());
         }
     }
     protected abstract Object doExec(String methodName, String[] parameterTypes, Object[] args);

@@ -30,32 +30,88 @@ public class ApiTest {
 //        Thread.sleep(Long.MAX_VALUE);
 //    }
 
+//    @Test
+//    public void test_gateway() throws Exception {
+//        // 1. 创建配置信息
+//        Configuration configuration = new Configuration();
+//        // 2. 手写一个http服务，将其注册到配置信息中
+//        HttpStatement httpStatement = new HttpStatement(
+//                "api-gateway-test",
+//                "com.xiaohe.gateway.rpc.IActivityBooth",
+//                "sayHi",
+//                "/wg/activity/sayHi",
+//                HttpCommandType.GET
+//        );
+//        configuration.addMapper(httpStatement);
+//
+//        // 3. 基于配置，创建会话工厂
+//        DefaultGatewaySessionFactory gatewaySessionFactory = new DefaultGatewaySessionFactory(configuration);
+//
+//        // 4. 创建启动网关服务
+//        GatewaySocketServer server = new GatewaySocketServer(gatewaySessionFactory);
+//
+//        Future<Channel> future = Executors.newFixedThreadPool(2).submit(server);
+//        Channel channel = future.get();
+//
+//        if (null == channel) {
+//            throw new RuntimeException("netty Server start error, channel is null");
+//        }
+//
+//        while (!channel.isActive()) {
+//            logger.info("netty server gateway start Ing ...");
+//            Thread.sleep(500);
+//        }
+//        logger.info("netty server gateway start Done! {}", channel.localAddress());
+//
+//        Thread.sleep(Long.MAX_VALUE);
+//
+//    }
+
     @Test
     public void test_gateway() throws Exception {
-        // 1. 创建配置信息
+        // 1. 创建配置信息加载注册
         Configuration configuration = new Configuration();
-        // 2. 手写一个http服务，将其注册到配置信息中
-        HttpStatement httpStatement = new HttpStatement(
+
+        configuration.registryConfig(
+                "api-gateway-test",
+                "zookeeper://localhost:2181",
+                "com.xiaohe.gateway.rpc.IActivityBooth",
+                "1.0.0"
+                );
+
+        HttpStatement httpStatement01 = new HttpStatement(
                 "api-gateway-test",
                 "com.xiaohe.gateway.rpc.IActivityBooth",
                 "sayHi",
+                "java.lang.String",
                 "/wg/activity/sayHi",
-                HttpCommandType.GET
+                HttpCommandType.GET,
+                false
         );
-        configuration.addMapper(httpStatement);
 
-        // 3. 基于配置，创建会话工厂
+        HttpStatement httpStatement02 = new HttpStatement(
+                "api-gateway-test",
+                "com.xiaohe.gateway.rpc.IActivityBooth",
+                "insert",
+                "com.xiaohe.gateway.rpc.dto.XReq",
+                "/wg/activity/insert",
+                HttpCommandType.POST,
+                true);
+
+        // 将两个请求注册到 Configuration 的 MapperRegistry 中
+        configuration.addMapper(httpStatement01);
+        configuration.addMapper(httpStatement02);
+
+        // 2. 基于配置创建会话工厂
         DefaultGatewaySessionFactory gatewaySessionFactory = new DefaultGatewaySessionFactory(configuration);
 
-        // 4. 创建启动网关服务
-        GatewaySocketServer server = new GatewaySocketServer(gatewaySessionFactory);
+        // 3. 创建启动网关网络服务
+        GatewaySocketServer server = new GatewaySocketServer(configuration, gatewaySessionFactory);
 
+        // 4. 启动网关
         Future<Channel> future = Executors.newFixedThreadPool(2).submit(server);
         Channel channel = future.get();
-
-        if (null == channel) {
-            throw new RuntimeException("netty Server start error, channel is null");
-        }
+        if (null == channel) throw new RuntimeException("netty server start error channel is null");
 
         while (!channel.isActive()) {
             logger.info("netty server gateway start Ing ...");
@@ -64,6 +120,7 @@ public class ApiTest {
         logger.info("netty server gateway start Done! {}", channel.localAddress());
 
         Thread.sleep(Long.MAX_VALUE);
+
 
     }
 

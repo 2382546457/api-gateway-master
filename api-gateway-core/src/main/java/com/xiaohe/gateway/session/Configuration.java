@@ -1,5 +1,7 @@
 package com.xiaohe.gateway.session;
 
+import com.xiaohe.gateway.authorization.IAuth;
+import com.xiaohe.gateway.authorization.auth.AuthService;
 import com.xiaohe.gateway.bind.IGenericReference;
 import com.xiaohe.gateway.bind.MapperRegistry;
 import com.xiaohe.gateway.datasource.Connection;
@@ -16,7 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Configuration {
+
     private final MapperRegistry mapperRegistry = new MapperRegistry(this);
+
+    /**
+     * 鉴权服务
+     */
+    private final IAuth auth = new AuthService();
 
     /**
      * 已经注册的服务
@@ -45,6 +53,34 @@ public class Configuration {
      */
     private final Map<String, ReferenceConfig<GenericService>> referenceConfigMap = new HashMap<>();
 
+    /**
+     * 注册配置
+     * @param applicationName
+     * @param address
+     * @param interfaceName
+     * @param version
+     */
+    public synchronized void registryConfig(String applicationName, String address, String interfaceName, String version) {
+        if (applicationConfigMap.get(applicationName) == null) {
+            ApplicationConfig applicationConfig = new ApplicationConfig();
+            applicationConfig.setName(applicationName);
+            applicationConfig.setQosEnable(false);
+            applicationConfigMap.put(applicationName, applicationConfig);
+        }
+        if (registryConfigMap.get(applicationName) == null) {
+            RegistryConfig registryConfig = new RegistryConfig();
+            registryConfig.setAddress(address);
+            registryConfig.setRegister(false);
+            registryConfigMap.put(applicationName, registryConfig);
+        }
+        if (referenceConfigMap.get(interfaceName) == null) {
+            ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
+            reference.setInterface(interfaceName);
+            reference.setVersion(version);
+            reference.setGeneric(true);
+            referenceConfigMap.put(interfaceName, reference);
+        }
+    }
 
     /**
      * 向 Gateway 中注册一个服务
@@ -85,4 +121,10 @@ public class Configuration {
     public Executor newExecutor(Connection connection) {
         return new SimpleExecutor(this, connection);
     }
+
+
+    public boolean authValidate(String uId, String token) {
+        return auth.validate(uId, token);
+    }
+
 }

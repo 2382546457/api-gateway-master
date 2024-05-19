@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
  * 响应解析器
  */
 public class ResponseParser {
-    public DefaultFullHttpResponse parse(Object result) {
+    public DefaultFullHttpResponse parse(GatewayResultMessage result) {
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
         response.content().writeBytes(JSON.toJSONString(result).getBytes(StandardCharsets.UTF_8));
         HttpHeaders heads = response.headers();

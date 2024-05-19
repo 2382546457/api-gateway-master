@@ -1,28 +1,23 @@
 package com.xiaohe.gateway.executor.result;
 
-/**
- * 执行结果
- */
-public class GatewayResult {
+public class SessionResult {
 
     private String code;
-
     private String info;
-
     private Object data;
 
-    public GatewayResult(String code, String info, Object data) {
+    protected SessionResult(String code, String info, Object data) {
         this.code = code;
         this.info = info;
         this.data = data;
     }
 
-    public static GatewayResult buildSuccess(Object data) {
-        return new GatewayResult("0000", "调用成功", data);
+    public static SessionResult buildSuccess(Object data) {
+        return new SessionResult("0000", "调用成功", data);
     }
 
-    public static GatewayResult buildError(Object data) {
-        return new GatewayResult("0001", "调用失败", data);
+    public static SessionResult buildError(Object data) {
+        return new SessionResult("0001", "调用失败", data);
     }
 
     public String getCode() {
@@ -36,4 +31,5 @@ public class GatewayResult {
     public Object getData() {
         return data;
     }
+
 }
