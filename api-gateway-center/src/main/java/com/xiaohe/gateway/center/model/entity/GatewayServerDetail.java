@@ -21,6 +21,11 @@ public class GatewayServerDetail {
      * 自增ID
      */
     private Integer id;
+
+    /**
+     * 分组标识
+     */
+    private String groupId;
     /**
      * 网关标识
      */
