@@ -1,9 +1,10 @@
 package com.xiaohe.gateway.assist.common;
 
-public class Result {
+public class Result<T> {
 
     private String code;
     private String info;
+    private T data;
 
     public String getCode() {
         return code;
@@ -21,4 +22,11 @@ public class Result {
         this.info = info;
     }
 
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 }
