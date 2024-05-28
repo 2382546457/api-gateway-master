@@ -23,13 +23,19 @@ public class GatewaySocketServer implements Callable<Channel> {
     private Configuration configuration;
     private DefaultGatewaySessionFactory gatewaySessionFactory;
 
-    private final EventLoopGroup boss = new NioEventLoopGroup(1);
-    private final EventLoopGroup work = new NioEventLoopGroup();
+    private EventLoopGroup boss;
+    private EventLoopGroup work;
     private Channel channel;
 
     public GatewaySocketServer(Configuration configuration, DefaultGatewaySessionFactory gatewaySessionFactory) {
         this.configuration = configuration;
         this.gatewaySessionFactory = gatewaySessionFactory;
+        this.initEventLoopGroup();
+    }
+
+    private void initEventLoopGroup() {
+        boss = new NioEventLoopGroup(configuration.getBossNThreads());
+        work = new NioEventLoopGroup(configuration.getBossNThreads());
     }
 
     @Override
