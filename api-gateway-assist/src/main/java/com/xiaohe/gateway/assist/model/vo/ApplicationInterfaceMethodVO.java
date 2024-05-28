@@ -82,5 +82,7 @@ public class ApplicationInterfaceMethodVO {
     public void setAuth(Integer auth) {
         this.auth = auth;
     }
-
+    public boolean isAuth(){
+        return auth == 1;
+    }
 }
