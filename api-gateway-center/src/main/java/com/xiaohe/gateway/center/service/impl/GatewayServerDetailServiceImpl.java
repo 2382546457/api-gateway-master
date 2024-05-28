@@ -11,6 +11,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
 public class GatewayServerDetailServiceImpl extends ServiceImpl<GatewayServerDetailMapper, GatewayServerDetail> implements GatewayServerDetailService {
 
@@ -41,10 +43,13 @@ public class GatewayServerDetailServiceImpl extends ServiceImpl<GatewayServerDet
         }
         if (!flag) {
             // 注册失败，重复了，那么就修改
-            LambdaUpdateChainWrapper<GatewayServerDetail> updateLambdaWrapper = lambdaUpdate().eq(GatewayServerDetail::getGatewayId, gatewayId)
-                    .eq(GatewayServerDetail::getGatewayAddress, gatewayAddress)
-                    .set(GatewayServerDetail::getStatus, Constants.GatewayStatus.Available);
-            update(updateLambdaWrapper);
+            LambdaQueryWrapper<GatewayServerDetail> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(GatewayServerDetail::getGatewayId, gatewayId).eq(GatewayServerDetail::getGatewayAddress, gatewayAddress);
+            gatewayServerDetail = getOne(lambdaQueryWrapper);
+            if (gatewayServerDetail != null) {
+                gatewayServerDetail.setStatus(Constants.GatewayStatus.Available);
+                updateById(gatewayServerDetail);
+            }
         }
         return flag;
     }

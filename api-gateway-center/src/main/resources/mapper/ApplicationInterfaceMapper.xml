@@ -13,4 +13,62 @@
     <!--#{?} 入参类别中的属性-->
     <!--Map<String,Object> selectMapById(Long id);-->
 
+<!--    <resultMap id="ApplicationInterfaceVOResultMap" type="com.xiaohe.gateway.center.model.vo.ApplicationInterfaceVO">-->
+<!--        <result property="systemId" column="system_id"/>-->
+<!--        <result property="interfaceId" column="interface_id"/>-->
+<!--        <result property="interfaceName" column="interface_name"/>-->
+<!--        <result property="interfaceVersion" column="interface_version"/>-->
+<!--        <collection property="methodList" ofType="com.xiaohe.gateway.center.model.entity.ApplicationInterfaceMethod">-->
+<!--            <id property="id" column="id"/>-->
+<!--            <result property="systemId" column="system_id"/>-->
+<!--            <result property="interfaceId" column="interface_id"/>-->
+<!--            <result property="methodId" column="method_id"/>-->
+<!--            <result property="methodName" column="method_name"/>-->
+<!--            <result property="uri" column="uri"/>-->
+<!--            <result property="httpCommandType" column="http_command_type"/>-->
+<!--            <result property="parameterType" column="parameter_type"/>-->
+<!--            <result property="auth" column="auth"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+    <resultMap id="ApplicationInterfaceVOResultMap" type="com.xiaohe.gateway.center.model.vo.ApplicationInterfaceVO">
+        <result property="systemId" column="system_id"/>
+        <result property="interfaceId" column="interface_id"/>
+        <result property="interfaceName" column="interface_name"/>
+        <result property="interfaceVersion" column="interface_version"/>
+        <collection property="methodList" ofType="com.xiaohe.gateway.center.model.entity.ApplicationInterfaceMethod">
+            <id property="id" column="id"/>
+            <result property="systemId" column="m_system_id"/>
+            <result property="interfaceId" column="m_interface_id"/>
+            <result property="methodId" column="method_id"/>
+            <result property="methodName" column="method_name"/>
+            <result property="uri" column="uri"/>
+            <result property="httpCommandType" column="http_command_type"/>
+            <result property="parameterType" column="parameter_type"/>
+            <result property="auth" column="auth"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryApplicationInterfaceVO" resultMap="ApplicationInterfaceVOResultMap">
+        select
+            a_i.`system_id` as system_id,
+            a_i.`interface_id` as interface_id,
+            a_i.`interface_name` as interface_name,
+            a_i.`interface_version` as interface_version,
+            a_i_m.`system_id` as m_system_id,
+            a_i_m.`interface_id` as m_interface_id,
+            a_i_m.`method_id` as method_id,
+            a_i_m.`method_name` as method_name,
+            a_i_m.`uri` as uri,
+            a_i_m.`http_command_type` as http_command_type,
+            a_i_m.`parameter_type` as parameter_type,
+            a_i_m.`auth` as auth
+        from application_interface a_i
+        inner join application_interface_method a_i_m on a_i.`interface_id` = a_i_m.`interface_id`
+        <where>
+            <if test="systemId != null">
+                a_i.`system_id` = #{systemId}
+            </if>
+        </where>
+    </select>
 </mapper>

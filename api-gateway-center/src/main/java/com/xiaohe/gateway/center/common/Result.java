@@ -11,6 +11,12 @@ public class Result<T> implements Serializable {
     private String info;
     private T data;
 
+    public Result(String code, String info) {
+        this.code = code;
+        this.info = info;
+        this.data = null;
+    }
+
     public Result(String code, String info, T data) {
         this.code = code;
         this.info = info;
@@ -32,6 +38,10 @@ public class Result<T> implements Serializable {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public static <T> Result<T> buildSuccess(T data) {
+        return new Result<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getInfo(), data);
     }
 
 }
