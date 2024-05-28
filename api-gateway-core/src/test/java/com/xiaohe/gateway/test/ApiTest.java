@@ -1,12 +1,11 @@
 package com.xiaohe.gateway.test;
 
-import com.xiaohe.gateway.mapping.HttpCommandType;
-import com.xiaohe.gateway.mapping.HttpStatement;
-import com.xiaohe.gateway.session.Configuration;
-import com.xiaohe.gateway.session.defaults.DefaultGatewaySessionFactory;
-import com.xiaohe.gateway.socket.GatewaySocketServer;
+import com.xiaohe.gateway.core.mapping.HttpCommandType;
+import com.xiaohe.gateway.core.mapping.HttpStatement;
+import com.xiaohe.gateway.core.session.Configuration;
+import com.xiaohe.gateway.core.session.defaults.DefaultGatewaySessionFactory;
+import com.xiaohe.gateway.core.socket.GatewaySocketServer;
 import io.netty.channel.Channel;
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
