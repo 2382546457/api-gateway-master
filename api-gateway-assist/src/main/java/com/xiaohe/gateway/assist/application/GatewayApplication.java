@@ -12,16 +12,21 @@ import com.xiaohe.gateway.core.mapping.HttpStatement;
 import com.xiaohe.gateway.core.session.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.ContextClosedEvent;
 
+
+import io.netty.channel.Channel;
 import java.util.List;
 
 
 /**
  * 在 spring 准备好之后执行 onApplicationEvent 事件, 在这个事件中，将网关注册到网关中心
  */
-public class GatewayApplication implements ApplicationListener<ContextRefreshedEvent> {
+public class GatewayApplication implements ApplicationListener<ContextClosedEvent>, ApplicationContextAware {
     private static final Logger logger = LoggerFactory.getLogger(GatewayApplication.class);
 
     private GatewayServiceProperties properties;
@@ -30,20 +35,38 @@ public class GatewayApplication implements ApplicationListener<ContextRefreshedE
 
     private Configuration configuration;
 
+    private Channel gatewaySocketChanel;
+
     public GatewayApplication(GatewayServiceProperties properties,
                               GatewayCenterService gatewayCenterService,
-                              Configuration configuration) {
+                              Configuration configuration,
+                              Channel gatewaySocketChanel) {
         this.properties = properties;
         this.gatewayCenterService = gatewayCenterService;
         this.configuration = configuration;
+        this.gatewaySocketChanel = gatewaySocketChanel;
+    }
+
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+        try {
+            if (gatewaySocketChanel.isActive()) {
+                logger.info("应用容器关闭，API网关服务关闭。localAddress: {}.", gatewaySocketChanel.localAddress());
+                gatewaySocketChanel.close();
+            }
+        } catch (Exception e) {
+            logger.error("应用容器关闭，API网关服务关闭失败");
+        }
     }
 
     /**
      * 在使用网关的应用的 spring 启动之后，执行这个方法，将网关注册到网关中心
-     * @param contextRefreshedEvent
+     *
+     * @param applicationContext
      */
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         // 1. 注册
         gatewayCenterService.doRegister(
                 properties.getAddress(),
