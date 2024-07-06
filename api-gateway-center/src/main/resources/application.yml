@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8901
 
 spring:
   datasource:
@@ -11,7 +11,7 @@ spring:
     host: 116.198.246.141
     port: 6379
     username: default
-    password: @HWF2002622456@
+    password: '@HWF2002622456@'
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
   configuration:
