@@ -11,7 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import redis.clients.jedis.JedisPoolConfig;
 
+import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -27,14 +34,36 @@ public class GatewayAutoConfig {
         return new GatewayCenterService();
     }
 
-
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory(GatewayServiceProperties properties, GatewayCenterService gatewayCenterService) {
+        // 从 center 拉取 redis 配置
+        Map<String, String> redisConfig = gatewayCenterService.queryRedisConfig(properties.getAddress());
+        RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration();
+        standaloneConfig.setHostName(redisConfig.get("host"));
+        standaloneConfig.setPort(Integer.parseInt(redisConfig.get("port")));
+        // 默认配置信息
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(100);
+        poolConfig.setMaxWaitMillis(30 * 1000);
+        poolConfig.setMinIdle(20);
+        poolConfig.setMaxIdle(40);
+        poolConfig.setTestWhileIdle(true);
+        // 创建 Redis 配置
+        JedisClientConfiguration clientConfig = JedisClientConfiguration.builder()
+                .connectTimeout(Duration.ofSeconds(2))
+                .clientName("api-gateway-assist-redis-" + properties.getGatewayId())
+                .usePooling().poolConfig(poolConfig).build();
+        // 实例化 Redis 链接对象
+        return new JedisConnectionFactory(standaloneConfig, clientConfig);
+    }
 
 
     @Bean
     public GatewayApplication gatewayApplication(GatewayServiceProperties properties,
                                                  GatewayCenterService registerGatewayService,
-                                                 com.xiaohe.gateway.core.session.Configuration configuration) {
-        return new GatewayApplication(properties, registerGatewayService, configuration);
+                                                 com.xiaohe.gateway.core.session.Configuration configuration,
+                                                 Channel gatewaySocketServerChannel) {
+        return new GatewayApplication(properties, registerGatewayService, configuration, gatewaySocketServerChannel);
     }
 
     /**

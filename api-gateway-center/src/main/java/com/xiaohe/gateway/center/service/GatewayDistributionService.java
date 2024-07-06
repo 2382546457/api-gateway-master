@@ -4,4 +4,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xiaohe.gateway.center.model.entity.GatewayDistribution;
 
 public interface GatewayDistributionService extends IService<GatewayDistribution> {
+    String queryGatewayDistribution(String systemId);
 }

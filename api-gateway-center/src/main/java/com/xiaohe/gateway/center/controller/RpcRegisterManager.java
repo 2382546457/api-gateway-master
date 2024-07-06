@@ -6,9 +6,7 @@ import com.xiaohe.gateway.center.common.Result;
 import com.xiaohe.gateway.center.model.entity.ApplicationInterface;
 import com.xiaohe.gateway.center.model.entity.ApplicationInterfaceMethod;
 import com.xiaohe.gateway.center.model.entity.ApplicationSystem;
-import com.xiaohe.gateway.center.service.ApplicationInterfaceMethodService;
-import com.xiaohe.gateway.center.service.ApplicationInterfaceService;
-import com.xiaohe.gateway.center.service.ApplicationSystemService;
+import com.xiaohe.gateway.center.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -38,9 +36,14 @@ public class RpcRegisterManager {
     @Resource
     private ApplicationInterfaceMethodService applicationInterfaceMethodService;
 
+    @Resource
+    private GatewayDistributionService gatewayDistributionService;
+
+    @Resource
+    private MessageService messageService;
+
     /**
      * 注册应用服务
-     *
      * @param systemId
      * @param systemName
      * @param systemType
@@ -91,6 +94,19 @@ public class RpcRegisterManager {
         } catch (Exception e) {
             return new Result<>(ResponseCode.UN_ERROR.getCode(), e.getMessage(), false);
         }
+    }
+
+    /**
+     * 网关服务注册
+     * @param systemId
+     * @return
+     */
+    @PostMapping(value = "registerEvent", produces = "application/json;charset=utf-8")
+    public Result<Boolean> registerEvent(@RequestParam String systemId) {
+        logger.info("应用注册: {}", systemId);
+        String gatewayId = gatewayDistributionService.queryGatewayDistribution(systemId);
+        messageService.pushMessage(gatewayId, systemId);
+        return Result.buildSuccess(true);
     }
 
 }

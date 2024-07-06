@@ -5,7 +5,7 @@
 			<el-icon v-if="sidebar.collapse"><Expand /></el-icon>
 			<el-icon v-else><Fold /></el-icon>
 		</div>
-		<div class="logo">网关管理系统【小傅哥】</div>
+		<div class="logo">网关管理系统</div>
 		<div class="header-right">
 			<div class="header-user-con">
 				<!-- 消息中心 -->
@@ -31,7 +31,7 @@
 					</span>
 					<template #dropdown>
 						<el-dropdown-menu>
-							<a href="https://github.com/fuzhengwei" target="_blank">
+							<a href="https://github.com/2382546457/api-gateway-master" target="_blank">
 								<el-dropdown-item>项目仓库</el-dropdown-item>
 							</a>
 							<el-dropdown-item command="user">个人中心</el-dropdown-item>
