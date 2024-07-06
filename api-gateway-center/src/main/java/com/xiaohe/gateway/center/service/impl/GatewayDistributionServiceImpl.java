@@ -9,6 +9,7 @@ import com.xiaohe.gateway.center.service.GatewayDistributionService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class GatewayDistributionServiceImpl extends ServiceImpl<GatewayDistributionMapper, GatewayDistribution> implements GatewayDistributionService {
@@ -22,6 +23,7 @@ public class GatewayDistributionServiceImpl extends ServiceImpl<GatewayDistribut
 
     @Override
     public OperationResult<GatewayDistribution> queryGatewayDistribution(OperationRequest<GatewayDistribution> request) {
-        return null;
+        List<GatewayDistribution> list = gatewayDistributionMapper.queryGatewayDistributionListByPage(request);
+        return new OperationResult<>(list.size(), list);
     }
 }

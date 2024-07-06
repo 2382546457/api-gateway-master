@@ -63,7 +63,7 @@ public class ErpController {
      * @param limit
      * @return
      */
-    @GetMapping(value = "queryGatewayServerDetail", produces = "application/json;charset=utf-8")
+    @GetMapping(value = "/queryGatewayServerDetail", produces = "application/json;charset=utf-8")
     public OperationResult<GatewayServerDetail> queryGatewayServerDetail(@RequestParam String groupId,
                                                                          @RequestParam String gatewayId,
                                                                          @RequestParam String page,
@@ -73,7 +73,7 @@ public class ErpController {
         return gatewayServerDetailService.queryGatewayServerDetail(req);
     }
 
-    @GetMapping(value = "queryGatewayDistribution", produces = "application/json;charset=utf-8")
+    @GetMapping(value = "/queryGatewayDistribution", produces = "application/json;charset=utf-8")
     public OperationResult<GatewayDistribution> queryGatewayDistribution(@RequestParam String groupId,
                                                                                @RequestParam String gatewayId,
                                                                                @RequestParam String page,
@@ -91,7 +91,7 @@ public class ErpController {
         }
     }
 
-    @GetMapping(value = "queryApplicationSystem", produces = "application/json;charset=utf-8")
+    @GetMapping(value = "/queryApplicationSystem", produces = "application/json;charset=utf-8")
     public OperationResult<ApplicationSystem> queryApplicationSystem(@RequestParam String systemId,
                                                                      @RequestParam String systemName,
                                                                      @RequestParam String page,
@@ -107,7 +107,7 @@ public class ErpController {
         }
     }
 
-    @GetMapping(value = "queryApplicationInterface", produces = "application/json;charset=utf-8")
+    @GetMapping(value = "/queryApplicationInterface", produces = "application/json;charset=utf-8")
     public OperationResult<ApplicationInterface> queryApplicationInterface(@RequestParam String systemId,
                                                                            @RequestParam String interfaceId,
                                                                            @RequestParam String page,
@@ -122,7 +122,7 @@ public class ErpController {
         }
     }
 
-    @GetMapping(value = "queryApplicationInterfaceMethodList", produces = "application/json;charset=utf-8")
+    @GetMapping(value = "/queryApplicationInterfaceMethodList", produces = "application/json;charset=utf-8")
     public OperationResult<ApplicationInterfaceMethod> queryApplicationInterfaceMethodList(@RequestParam String systemId,
                                                                                                  @RequestParam String interfaceId,
                                                                                                  @RequestParam String page,
