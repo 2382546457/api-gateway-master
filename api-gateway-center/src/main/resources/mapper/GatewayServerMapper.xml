@@ -14,4 +14,16 @@
     <!--#{?} 入参类别中的属性-->
     <!--Map<String,Object> selectMapById(Long id);-->
 
+    <select id="queryGatewayServer"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.GatewayServer">
+        SELECT id, group_id, group_name FROM gateway_server
+        <where>
+            <if test="null != data">
+                and group_id = #{data}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

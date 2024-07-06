@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 @TableName("gateway_distribution")
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class GatewayDistribution {
     @TableId
     private Integer id;

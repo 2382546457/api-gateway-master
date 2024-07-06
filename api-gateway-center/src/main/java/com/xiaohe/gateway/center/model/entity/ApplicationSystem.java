@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  * 应用系统
  */
 @Data
+@Accessors(chain = true)
 @TableName("application_system")
 @NoArgsConstructor
 @AllArgsConstructor

@@ -13,5 +13,21 @@
     <!--注: 返回值不是指方法中返回的值，而是执行后自动在（添加/更新）对象里被赋值-->
     <!--#{?} 入参类别中的属性-->
     <!--Map<String,Object> selectMapById(Long id);-->
+    <select id="queryApplicationSystemListByPage"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.ApplicationSystem">
+        SELECT id, system_id, system_name, system_type, system_registry
+        FROM application_system
+        <where>
+            <if test="data != null and data.systemId != ''">
+                and system_id = #{data.systemId}
+            </if>
+            <if test="data != null and data.systemName != ''">
+                and system_name = #{data.systemName}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 
 </mapper>

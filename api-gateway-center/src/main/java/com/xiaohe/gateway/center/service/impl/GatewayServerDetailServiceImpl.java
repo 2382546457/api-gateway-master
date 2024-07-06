@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaohe.gateway.center.common.Constants;
+import com.xiaohe.gateway.center.common.OperationRequest;
+import com.xiaohe.gateway.center.common.OperationResult;
 import com.xiaohe.gateway.center.mapper.GatewayServerDetailMapper;
 import com.xiaohe.gateway.center.model.entity.GatewayServerDetail;
 import com.xiaohe.gateway.center.service.GatewayServerDetailService;
@@ -11,7 +13,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class GatewayServerDetailServiceImpl extends ServiceImpl<GatewayServerDetailMapper, GatewayServerDetail> implements GatewayServerDetailService {
@@ -52,5 +56,11 @@ public class GatewayServerDetailServiceImpl extends ServiceImpl<GatewayServerDet
             }
         }
         return flag;
+    }
+
+    @Override
+    public OperationResult<GatewayServerDetail> queryGatewayServerDetail(OperationRequest<GatewayServerDetail> request) {
+        List<GatewayServerDetail> gatewayServerDetails = baseMapper.queryGatewayServerDetail(request);
+        return new OperationResult<>(gatewayServerDetails.size(), gatewayServerDetails);
     }
 }

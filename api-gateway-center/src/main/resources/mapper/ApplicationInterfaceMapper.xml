@@ -71,4 +71,20 @@
             </if>
         </where>
     </select>
+    <select id="queryApplicationInterfaceListByPage"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.ApplicationInterface">
+        SELECT id, system_id, interface_id, interface_name, interface_version
+        FROM application_interface
+        <where>
+            <if test="data != null and data.systemId != ''">
+                and system_id = #{data.systemId}
+            </if>
+            <if test="data != null and data.interfaceId != ''">
+                and interface_id = #{data.interfaceId}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

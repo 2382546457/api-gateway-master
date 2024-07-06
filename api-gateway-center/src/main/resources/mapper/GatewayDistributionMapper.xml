@@ -31,4 +31,21 @@
     <select id="queryGatewayDistribution" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT gateway_id FROM gateway_distribution WHERE system_id = #{systemId}
     </select>
+
+    <select id="queryGatewayDistributionListByPage"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.GatewayDistribution">
+        SELECT id, group_id, gateway_id, system_id, system_name, create_time, update_time
+        FROM gateway_distribution
+        <where>
+            <if test="data != null and data.groupId != ''">
+                and group_id = #{data.groupId}
+            </if>
+            <if test="data != null and data.gatewayId != ''">
+                and gateway_id = #{data.gatewayId}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

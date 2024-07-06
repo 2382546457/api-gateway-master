@@ -3,6 +3,8 @@ package com.xiaohe.gateway.center.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaohe.gateway.center.common.OperationRequest;
+import com.xiaohe.gateway.center.common.OperationResult;
 import com.xiaohe.gateway.center.mapper.ApplicationInterfaceMapper;
 import com.xiaohe.gateway.center.mapper.ApplicationSystemMapper;
 import com.xiaohe.gateway.center.model.entity.ApplicationSystem;
@@ -12,6 +14,7 @@ import com.xiaohe.gateway.center.model.vo.ApplicationSystemRichInfo;
 import com.xiaohe.gateway.center.model.vo.ApplicationSystemVO;
 import com.xiaohe.gateway.center.service.ApplicationSystemService;
 import com.xiaohe.gateway.center.service.GatewayDistributionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -29,6 +32,8 @@ public class ApplicationSystemServiceImpl extends ServiceImpl<ApplicationSystemM
 
     @Resource
     private ApplicationInterfaceMapper applicationInterfaceMapper;
+    @Autowired
+    private ApplicationSystemMapper applicationSystemMapper;
 
 
     @Override
@@ -60,5 +65,11 @@ public class ApplicationSystemServiceImpl extends ServiceImpl<ApplicationSystemM
             applicationSystemVO.setInterfaceList(applicationInterfaceVOList);
         }
         return new ApplicationSystemRichInfo(gatewayId, applicationSystemVOList);
+    }
+
+    @Override
+    public OperationResult<ApplicationSystem> queryApplicationSystem(OperationRequest<ApplicationSystem> request) {
+        List<ApplicationSystem> list = applicationSystemMapper.queryApplicationSystemListByPage(request);
+        return new OperationResult<>(list.size(), list);
     }
 }

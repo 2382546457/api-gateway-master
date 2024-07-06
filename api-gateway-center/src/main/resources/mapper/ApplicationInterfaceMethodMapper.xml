@@ -13,4 +13,20 @@
     <!--#{?} 入参类别中的属性-->
     <!--Map<String,Object> selectMapById(Long id);-->
 
+    <select id="queryApplicationInterfaceMethodListByPage"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.ApplicationInterfaceMethod">
+        SELECT id, system_id, interface_id, method_id, method_name, parameter_type, uri, http_command_type, auth
+        FROM application_interface_method
+        <where>
+            <if test="data != null and data.systemId != ''">
+                and system_id = #{data.systemId}
+            </if>
+            <if test="data != null and data.interfaceId != ''">
+                and interface_id = #{data.interfaceId}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

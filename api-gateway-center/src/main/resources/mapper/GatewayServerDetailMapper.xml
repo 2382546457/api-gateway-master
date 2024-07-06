@@ -14,4 +14,20 @@
     <!--#{?} 入参类别中的属性-->
     <!--Map<String,Object> selectMapById(Long id);-->
 
+    <select id="queryGatewayServerDetail"
+            parameterType="com.xiaohe.gateway.center.common.OperationRequest"
+            resultType="com.xiaohe.gateway.center.model.entity.GatewayServerDetail">
+        SELECT id, group_id, gateway_id, gateway_name, gateway_address, status, create_time, update_time
+        FROM gateway_server_detail
+        <where>
+            <if test="data != null and data.groupId != ''">
+                and group_id = #{data.groupId}
+            </if>
+            <if test="data != null and data.gatewayId != ''">
+                and gateway_id = #{data.gatewayId}
+            </if>
+        </where>
+        order by id desc
+        limit #{pageStart},#{pageEnd}
+    </select>
 </mapper>

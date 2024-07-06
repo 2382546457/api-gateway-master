@@ -1,6 +1,8 @@
 package com.xiaohe.gateway.center.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaohe.gateway.center.common.OperationRequest;
+import com.xiaohe.gateway.center.common.OperationResult;
 import com.xiaohe.gateway.center.mapper.GatewayDistributionMapper;
 import com.xiaohe.gateway.center.model.entity.GatewayDistribution;
 import com.xiaohe.gateway.center.service.GatewayDistributionService;
@@ -16,5 +18,10 @@ public class GatewayDistributionServiceImpl extends ServiceImpl<GatewayDistribut
     @Override
     public String queryGatewayDistribution(String systemId) {
         return gatewayDistributionMapper.queryGatewayDistribution(systemId);
+    }
+
+    @Override
+    public OperationResult<GatewayDistribution> queryGatewayDistribution(OperationRequest<GatewayDistribution> request) {
+        return null;
     }
 }
