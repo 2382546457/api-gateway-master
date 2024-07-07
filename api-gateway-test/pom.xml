@@ -74,7 +74,11 @@
             <artifactId>curator-recipes</artifactId>
             <version>4.0.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.xiaohe.gateway</groupId>
+            <artifactId>api-gateway-sdk</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

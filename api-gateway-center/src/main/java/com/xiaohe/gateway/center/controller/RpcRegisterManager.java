@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * RPC服务注册管理
@@ -109,4 +110,13 @@ public class RpcRegisterManager {
         return Result.buildSuccess(true);
     }
 
+
+    /**
+     * 查询redis配置
+     * @return
+     */
+    @PostMapping(value = "queryRedisConfig", produces = "application/json;charset=utf-8")
+    public Result<Map<String, String>> queryRedisConfig() {
+        return Result.buildSuccess(messageService.queryRedisConfig());
+    }
 }

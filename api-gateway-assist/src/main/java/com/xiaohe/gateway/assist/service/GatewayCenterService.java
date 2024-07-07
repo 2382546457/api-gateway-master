@@ -33,7 +33,7 @@ public class GatewayCenterService {
 
         String resultStr = null;
         try {
-            resultStr = HttpUtil.post(address, paramMap, 550);
+            resultStr = HttpUtil.post(address + "/wg/admin/config/registerGateway", paramMap, 5550);
         } catch (Exception e) {
             logger.error("网关服务注册异常，链接资源不可用：{}.", address + "/wg/admin/config/registerGateway");
             throw e;
@@ -73,7 +73,7 @@ public class GatewayCenterService {
      * @return
      */
     public Map<String, String> queryRedisConfig(String address) {
-        String resultStr = HttpUtil.post(address + "/wg/admin/config/queryRedisConfig", "", 1550);
+        String resultStr = HttpUtil.post(address + "/wg/admin/register/queryRedisConfig", "", 1550);
         Result<Map<String, String>> result = JSON.parseObject(resultStr, new TypeReference<Result<Map<String, String>>>() {});
         if (!"0000".equals(result.getCode()))
             throw new GatewayException("从网关中心拉取Redis配置信息异常");

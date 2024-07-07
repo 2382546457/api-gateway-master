@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -41,6 +42,7 @@ public class GatewayAutoConfig {
         RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration();
         standaloneConfig.setHostName(redisConfig.get("host"));
         standaloneConfig.setPort(Integer.parseInt(redisConfig.get("port")));
+        standaloneConfig.setPassword(redisConfig.get("password"));
         // 默认配置信息
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxTotal(100);

@@ -16,3 +16,10 @@ dubbo:
   scan:
     base-packages: com.xiaohe.gateway.rpc
 
+
+api-gateway-sdk:
+  enabled: true
+  address: http://localhost:8901
+  systemId: api-gateway-test-provider
+  systemName: 网关sdk测试工程
+  systemRegistry: zookeeper://192.168.1.102:2181

@@ -2,7 +2,7 @@ server:
   port: 8902
 
 api-gateway:
-  address: http://192.168.1.102:8901  # 注册中心；从这里获取接口信息以及完成注册网关操作
+  address: http://localhost:8901  # 注册中心；从这里获取接口信息以及完成注册网关操作
   groupId: 10001                      # 网关分组；每一个网关通信组件都分配一个对应的分组
   gatewayId: api-gateway-g4           # 网关标识；
   gatewayName: 电商配送网关             # 网关名称；
