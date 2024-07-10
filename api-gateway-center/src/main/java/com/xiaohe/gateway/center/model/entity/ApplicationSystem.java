@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplicationSystem {
-    private Integer id;
+    private Long id;
 
     /**
      * 系统标识

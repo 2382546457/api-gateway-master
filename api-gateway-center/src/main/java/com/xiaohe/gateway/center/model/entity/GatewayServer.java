@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GatewayServer {
     @TableId
-    private Integer id;
+    private Long id;
 
     /**
      * 分组标识

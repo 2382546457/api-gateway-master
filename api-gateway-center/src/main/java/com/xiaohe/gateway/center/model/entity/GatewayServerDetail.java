@@ -25,7 +25,7 @@ public class GatewayServerDetail {
      * 自增ID
      */
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 分组标识

@@ -1,6 +1,7 @@
 package com.xiaohe.gateway.center.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohe.gateway.center.common.ResponseCode;
 import com.xiaohe.gateway.center.common.Result;
 import com.xiaohe.gateway.center.model.entity.ApplicationInterface;
@@ -9,6 +10,7 @@ import com.xiaohe.gateway.center.model.entity.ApplicationSystem;
 import com.xiaohe.gateway.center.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,14 +59,20 @@ public class RpcRegisterManager {
                                                @RequestParam String systemType,
                                                @RequestParam String systemRegistry) {
         try {
-            ApplicationSystem applicationSystem = new ApplicationSystem();
+            // 要求systemId唯一, 如果已存在就更新
+            LambdaQueryWrapper<ApplicationSystem> applicationSystemLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            applicationSystemLambdaQueryWrapper.eq(ApplicationSystem::getSystemId, systemId);
+            ApplicationSystem applicationSystem = applicationSystemService.getOne(applicationSystemLambdaQueryWrapper);
+            if (applicationSystem == null) {
+                applicationSystem = new ApplicationSystem();
+            }
             applicationSystem.setSystemName(systemName);
             applicationSystem.setSystemId(systemId);
             applicationSystem.setSystemRegistry(systemRegistry);
             applicationSystem.setSystemType(systemType);
             applicationSystem.setCreateTime(new Date());
             applicationSystem.setUpdateTime(new Date());
-            applicationSystemService.save(applicationSystem);
+            applicationSystemService.saveOrUpdate(applicationSystem);
             return new Result<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getInfo(), true);
         } catch (DuplicateKeyException e) {
             return new Result<>(ResponseCode.INDEX_DUP.getCode(), e.getMessage(), true);
@@ -74,9 +82,24 @@ public class RpcRegisterManager {
     }
 
     @PostMapping(value = "/registerApplicationInterface", produces = "application/json;charset=utf-8")
-    public Result<Boolean> registerApplicationInterface(@RequestParam ApplicationInterface applicationInterface) {
+    public Result<Boolean> registerApplicationInterface(@RequestParam String systemId,
+                                                        @RequestParam String interfaceId,
+                                                        @RequestParam String interfaceName,
+                                                        @RequestParam String interfaceVersion) {
+
         try {
-            applicationInterfaceService.save(applicationInterface);
+            LambdaQueryWrapper<ApplicationInterface> applicationInterfaceLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            applicationInterfaceLambdaQueryWrapper.eq(ApplicationInterface::getInterfaceId, interfaceId);
+            ApplicationInterface applicationInterface = applicationInterfaceService.getOne(applicationInterfaceLambdaQueryWrapper);
+            if (applicationInterface == null) {
+                applicationInterface = new ApplicationInterface();
+                applicationInterface.setCreateTime(new Date());
+            }
+            applicationInterface.setInterfaceId(interfaceId);
+            applicationInterface.setInterfaceName(interfaceName);
+            applicationInterface.setInterfaceVersion(interfaceVersion);
+            applicationInterface.setSystemId(systemId);
+            applicationInterfaceService.saveOrUpdate(applicationInterface);
             return new Result<>(ResponseCode.SUCCESS.getCode(), "注册成功", true);
         } catch (DuplicateKeyException e) {
             return new Result<>(ResponseCode.INDEX_DUP.getCode(), e.getMessage(), true);
@@ -86,9 +109,30 @@ public class RpcRegisterManager {
     }
 
     @PostMapping(value = "/registerApplicationInterfaceMethod", produces = "application/json;charset=utf-8")
-    public Result<Boolean> registerApplicationInterfaceMethod(@RequestParam ApplicationInterfaceMethod applicationInterfaceMethod) {
+    public Result<Boolean> registerApplicationInterfaceMethod(@RequestParam String systemId,
+                                                              @RequestParam String interfaceId,
+                                                              @RequestParam String methodId,
+                                                              @RequestParam String methodName,
+                                                              @RequestParam String parameterType,
+                                                              @RequestParam String uri,
+                                                              @RequestParam String httpCommandType,
+                                                              @RequestParam String auth) {
         try {
-            applicationInterfaceMethodService.save(applicationInterfaceMethod);
+            LambdaQueryWrapper<ApplicationInterfaceMethod> applicationInterfaceMethodLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            applicationInterfaceMethodLambdaQueryWrapper.eq(ApplicationInterfaceMethod::getMethodId, methodId);
+            ApplicationInterfaceMethod applicationInterfaceMethod = applicationInterfaceMethodService.getOne(applicationInterfaceMethodLambdaQueryWrapper);
+            if (applicationInterfaceMethod == null) {
+                applicationInterfaceMethod = new ApplicationInterfaceMethod();
+                applicationInterfaceMethod.setCreateTime(new Date());
+            }
+            applicationInterfaceMethod.setInterfaceId(interfaceId);
+            applicationInterfaceMethod.setSystemId(systemId);
+            applicationInterfaceMethod.setMethodName(methodName);
+            applicationInterfaceMethod.setParameterType(parameterType);
+            applicationInterfaceMethod.setUri(uri);
+            applicationInterfaceMethod.setHttpCommandType(httpCommandType);
+            applicationInterfaceMethod.setAuth(Integer.valueOf(auth));
+            applicationInterfaceMethodService.saveOrUpdate(applicationInterfaceMethod);
             return new Result<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getInfo(), true);
         } catch (DuplicateKeyException e) {
             return new Result<>(ResponseCode.INDEX_DUP.getCode(), e.getMessage(), true);

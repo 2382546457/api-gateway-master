@@ -19,7 +19,7 @@ import java.util.Date;
 @TableName("application_interface_method")
 public class ApplicationInterfaceMethod {
     @TableId
-    private Integer id;
+    private Long id;
 
     /**
      * 系统标识

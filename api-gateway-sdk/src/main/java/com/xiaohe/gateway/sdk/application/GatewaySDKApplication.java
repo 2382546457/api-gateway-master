@@ -33,8 +33,9 @@ public class GatewaySDKApplication implements BeanPostProcessor {
         if (null == apiProducerClazz) {
             return bean;
         }
-        logger.info("\n应用注册：系统信息 \nsystemId: {} \nsystemName: {} \nsystemType: {} \nsystemRegistry: {}", properties.getSystemId(), properties.getSystemName(), "RPC", properties.getSystemRegistry());
-        // 1. 系统信息
+        logger.info("\n应用注册：系统信息 \nsystemId: {} \nsystemName: {} \nsystemType: {} \nsystemRegistry: {}",
+                properties.getSystemId(), properties.getSystemName(), "RPC", properties.getSystemRegistry());
+        // 1. 注册系统信息
         gatewayCenterService.doRegisterApplication(
                 properties.getAddress(),
                 properties.getSystemId(),
@@ -49,7 +50,6 @@ public class GatewaySDKApplication implements BeanPostProcessor {
             throw new GatewayException(bean.getClass().getName() + "interfaces not one this is " + JSON.toJSONString(interfaces));
         }
         String interfaceId = interfaces[0].getName();
-        logger.info("\n应用注册：接口信息 \nsystemId: {} \ninterfaceId: {} \ninterfaceName: {} \ninterfaceVersion: {}", properties.getSystemId(), interfaceId, apiProducerClazz.interfaceName(), apiProducerClazz.interfaceVersion());
         gatewayCenterService.doRegisterApplicationInterface(
                 properties.getAddress(),
                 properties.getSystemId(),

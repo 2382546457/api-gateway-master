@@ -19,7 +19,7 @@ import java.util.Date;
 @Accessors(chain = true)
 public class GatewayDistribution {
     @TableId
-    private Integer id;
+    private Long id;
 
     /**
      * 分组标识

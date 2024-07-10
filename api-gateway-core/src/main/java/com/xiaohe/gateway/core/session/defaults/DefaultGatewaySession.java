@@ -30,8 +30,10 @@ public class DefaultGatewaySession implements GatewaySession {
      */
     @Override
     public Object get(String methodName, Map<String, Object> params) {
+        // 1. 解析请求
         HttpStatement httpStatement = configuration.getHttpStatement(uri);
         try {
+            // 2. 执行请求
             return executor.exec(httpStatement, params);
         } catch (Exception e) {
             throw new RuntimeException("Error exec get. Cause : " + e);

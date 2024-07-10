@@ -22,13 +22,12 @@ public class GatewayCenterService {
         paramMap.put("systemRegistry", systemRegistry);
         String resultStr;
         try {
-            resultStr = HttpUtil.post(address + "/wg/admin/register/registerApplication", paramMap, 1550);
+            resultStr = HttpUtil.post(address + "/wg/admin/register/registerApplication", paramMap, 5550);
         } catch (Exception e) {
             logger.error("应用服务注册异常，链接资源不可用：{}", address + "/wg/admin/register/registerApplication");
             throw e;
         }
-        Result<Boolean> result = JSON.parseObject(resultStr, new TypeReference<Result<Boolean>>() {
-        });
+        Result<Boolean> result = JSON.parseObject(resultStr, new TypeReference<Result<Boolean>>() {});
         logger.info("向网关中心注册应用服务 systemId：{} systemName：{} 注册结果：{}", systemId, systemName, resultStr);
         if (!"0000".equals(result.getCode()) && !"0003".equals(result.getCode()))
             throw new GatewayException("注册应用服务异常 [systemId：" + systemId + "] 、[systemRegistry：" + systemRegistry + "]");
@@ -42,7 +41,7 @@ public class GatewayCenterService {
         paramMap.put("interfaceVersion", interfaceVersion);
         String resultStr;
         try {
-            resultStr = HttpUtil.post(address + "/wg/admin/register/registerApplicationInterface", paramMap, 1550);
+            resultStr = HttpUtil.post(address + "/wg/admin/register/registerApplicationInterface", paramMap, 5550);
         } catch (Exception e) {
             logger.error("应用服务接口注册异常，链接资源不可用：{}", address + "/wg/admin/register/registerApplicationInterface");
             throw e;
@@ -93,7 +92,7 @@ public class GatewayCenterService {
         paramMap.put("systemId", systemId);
         String resultStr;
         try {
-            resultStr = HttpUtil.post(address + "/wg/admin/register/registerEvent", paramMap, 550);
+            resultStr = HttpUtil.post(address + "/wg/admin/register/registerEvent", paramMap, 5550);
         } catch (Exception e) {
             logger.error("应用服务接口事件方法异常，链接资源不可用：{}", address + "/wg/admin/register/registerEvent");
             throw e;

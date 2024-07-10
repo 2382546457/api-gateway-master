@@ -18,7 +18,7 @@ import java.util.Date;
 @TableName("application_interface")
 public class ApplicationInterface {
     @TableId("id")
-    private Integer id;
+    private Long id;
 
     /**
      * 系统标识
