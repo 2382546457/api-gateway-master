@@ -4,14 +4,13 @@ package com.xiaohe.gateway.center.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaohe.gateway.center.common.ResponseCode;
 import com.xiaohe.gateway.center.common.Result;
-import com.xiaohe.gateway.center.model.entity.ApplicationInterface;
-import com.xiaohe.gateway.center.model.entity.ApplicationInterfaceMethod;
-import com.xiaohe.gateway.center.model.entity.ApplicationSystem;
+import com.xiaohe.gateway.center.model.entity.*;
 import com.xiaohe.gateway.center.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * RPC服务注册管理
@@ -41,6 +41,9 @@ public class RpcRegisterManager {
 
     @Resource
     private GatewayDistributionService gatewayDistributionService;
+
+    @Resource
+    private GatewayServerDetailService gatewayServerDetailService;
 
     @Resource
     private MessageService messageService;
@@ -147,9 +150,27 @@ public class RpcRegisterManager {
      * @return
      */
     @PostMapping(value = "registerEvent", produces = "application/json;charset=utf-8")
-    public Result<Boolean> registerEvent(@RequestParam String systemId) {
+    public Result<Boolean> registerEvent(@RequestParam String systemId,
+                                         @RequestParam String gatewayId,
+                                         @RequestParam String systemName,
+                                         @RequestParam String systemRegistry) {
         logger.info("应用注册: {}", systemId);
-        String gatewayId = gatewayDistributionService.queryGatewayDistribution(systemId);
+        GatewayDistribution gatewayDistribution = gatewayDistributionService.queryGatewayDistribution(systemId);
+        // 如果是第一次注册，将 网关-业务项目 对应关系写入数据库
+        if (Objects.isNull(gatewayDistribution)) {
+            gatewayDistribution = new GatewayDistribution();
+        }
+        gatewayDistribution.setSystemId(systemId);
+        gatewayDistribution.setSystemName(systemName);
+        gatewayDistribution.setGatewayId(gatewayId);
+        gatewayDistributionService.saveOrUpdate(gatewayDistribution);
+        // 如果不是第一次注册
+        LambdaQueryWrapper<GatewayServerDetail> gatewayServerDetailLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        gatewayServerDetailLambdaQueryWrapper.eq(GatewayServerDetail::getGatewayId, gatewayId);
+        GatewayServerDetail one = gatewayServerDetailService.getOne(gatewayServerDetailLambdaQueryWrapper);
+        gatewayDistribution.setGroupId(one.getGroupId());
+
+        // 发布业务项目注册的信息
         messageService.pushMessage(gatewayId, systemId);
         return Result.buildSuccess(true);
     }

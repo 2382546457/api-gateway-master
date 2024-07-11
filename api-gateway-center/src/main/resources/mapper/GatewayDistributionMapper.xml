@@ -28,8 +28,8 @@
         SELECT system_id FROM gateway_distribution WHERE gateway_id = #{gatewayId}
     </select>
 
-    <select id="queryGatewayDistribution" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT gateway_id FROM gateway_distribution WHERE system_id = #{systemId}
+    <select id="queryGatewayDistribution" parameterType="java.lang.String" resultMap="gatewayDistributionMap">
+        SELECT * FROM gateway_distribution WHERE system_id = #{systemId}
     </select>
 
     <select id="queryGatewayDistributionListByPage"

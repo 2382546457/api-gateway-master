@@ -19,6 +19,10 @@ public class GatewaySDKServiceProperties {
      */
     private String systemName;
     /**
+     * 该系统要注册到哪个网关
+     */
+    private String gatewayId;
+    /**
      * RPC注册中心；zookeeper://127.0.0.1:2181
      */
     private String systemRegistry;
@@ -67,5 +71,11 @@ public class GatewaySDKServiceProperties {
         this.enabled = enabled;
     }
 
+    public String getGatewayId() {
+        return gatewayId;
+    }
 
+    public void setGatewayId(String gatewayId) {
+        this.gatewayId = gatewayId;
+    }
 }

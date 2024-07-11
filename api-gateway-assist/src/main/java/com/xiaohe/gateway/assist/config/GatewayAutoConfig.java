@@ -16,6 +16,9 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
@@ -57,6 +60,33 @@ public class GatewayAutoConfig {
                 .usePooling().poolConfig(poolConfig).build();
         // 实例化 Redis 链接对象
         return new JedisConnectionFactory(standaloneConfig, clientConfig);
+    }
+
+    /**
+     * 创建一个Redis监听器
+     * @param gatewayApplication
+     * @return
+     */
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter(GatewayApplication gatewayApplication) {
+        return new MessageListenerAdapter(gatewayApplication, "receiveMessage");
+    }
+
+    /**
+     * 将Redis监听器设置到容器中
+     * @param properties
+     * @param redisConnectionFactory
+     * @param messageListenerAdapter
+     * @return
+     */
+    @Bean
+    public RedisMessageListenerContainer container(GatewayServiceProperties properties,
+                                                   RedisConnectionFactory redisConnectionFactory,
+                                                   MessageListenerAdapter messageListenerAdapter) {
+        RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+        redisMessageListenerContainer.addMessageListener(messageListenerAdapter, new PatternTopic(properties.getGatewayId()));
+        return redisMessageListenerContainer;
     }
 
 

@@ -17,7 +17,7 @@ public class GatewayDistributionServiceImpl extends ServiceImpl<GatewayDistribut
     private GatewayDistributionMapper gatewayDistributionMapper;
 
     @Override
-    public String queryGatewayDistribution(String systemId) {
+    public GatewayDistribution queryGatewayDistribution(String systemId) {
         return gatewayDistributionMapper.queryGatewayDistribution(systemId);
     }
 

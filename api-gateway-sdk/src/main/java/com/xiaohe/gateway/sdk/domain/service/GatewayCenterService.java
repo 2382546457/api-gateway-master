@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.xiaohe.gateway.sdk.GatewayException;
 import com.xiaohe.gateway.sdk.common.Result;
+import com.xiaohe.gateway.sdk.config.GatewaySDKServiceProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,14 +88,18 @@ public class GatewayCenterService {
     }
 
 
-    public void doRegisterEvent(String address, String systemId) {
+    public void doRegisterEvent(GatewaySDKServiceProperties properties) {
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("systemId", systemId);
+        paramMap.put("systemId", properties.getSystemId());
+        paramMap.put("gatewayId", properties.getGatewayId());
+        paramMap.put("systemName", properties.getSystemName());
+        paramMap.put("systemRegistry", properties.getSystemRegistry());
+
         String resultStr;
         try {
-            resultStr = HttpUtil.post(address + "/wg/admin/register/registerEvent", paramMap, 5550);
+            resultStr = HttpUtil.post(properties.getAddress() + "/wg/admin/register/registerEvent", paramMap, 5550);
         } catch (Exception e) {
-            logger.error("应用服务接口事件方法异常，链接资源不可用：{}", address + "/wg/admin/register/registerEvent");
+            logger.error("应用服务接口事件方法异常，链接资源不可用：{}", properties.getAddress() + "/wg/admin/register/registerEvent");
             throw e;
         }
         Result<Boolean> result = JSON.parseObject(resultStr, new TypeReference<Result<Boolean>>() {

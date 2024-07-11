@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface GatewayDistributionMapper extends BaseMapper<GatewayDistribution> {
 
-    String queryGatewayDistribution(String systemId);
+    GatewayDistribution queryGatewayDistribution(String systemId);
 
     List<GatewayDistribution> queryGatewayDistributionListByPage(OperationRequest<GatewayDistribution> request);
 

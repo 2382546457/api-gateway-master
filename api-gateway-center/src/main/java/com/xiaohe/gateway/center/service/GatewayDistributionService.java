@@ -6,7 +6,7 @@ import com.xiaohe.gateway.center.common.OperationResult;
 import com.xiaohe.gateway.center.model.entity.GatewayDistribution;
 
 public interface GatewayDistributionService extends IService<GatewayDistribution> {
-    String queryGatewayDistribution(String systemId);
+    GatewayDistribution queryGatewayDistribution(String systemId);
 
     OperationResult<GatewayDistribution> queryGatewayDistribution(OperationRequest<GatewayDistribution> request);
 }

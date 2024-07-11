@@ -86,7 +86,7 @@ public class GatewaySDKApplication implements BeanPostProcessor {
         }
 
         // 注册完成，执行事件通知
-        gatewayCenterService.doRegisterEvent(properties.getAddress(), properties.getSystemId());
+        gatewayCenterService.doRegisterEvent(properties);
 
         return bean;
     }
