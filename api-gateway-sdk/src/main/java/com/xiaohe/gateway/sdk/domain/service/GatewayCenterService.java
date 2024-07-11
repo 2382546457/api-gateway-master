@@ -104,9 +104,9 @@ public class GatewayCenterService {
         }
         Result<Boolean> result = JSON.parseObject(resultStr, new TypeReference<Result<Boolean>>() {
         });
-        logger.info("应用服务接口事件方法 systemId：{} 注册结果：{}", systemId, resultStr);
+        logger.info("应用服务接口事件方法 systemId：{} 注册结果：{}", properties.getSystemId(), resultStr);
         if (!"0000".equals(result.getCode()))
-            throw new GatewayException("向网关中心注册应用接口服务异常 [systemId：" + systemId + "] ");
+            throw new GatewayException("向网关中心注册应用接口服务异常 [systemId：" + properties.getSystemId() + "] ");
     }
 
 }
