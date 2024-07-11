@@ -17,18 +17,13 @@ public class MessageServiceImpl implements MessageService {
     private Integer port;
     @Resource
     private Publisher publisher;
-    @Value("${spring.redis.username}")
-    private String username;
-    @Value("${spring.redis.password}")
-    private String password;
+
 
     @Override
     public Map<String, String> queryRedisConfig() {
         return new HashMap<String, String>() {{
             put("host", host);
             put("port", String.valueOf(port));
-            put("username", username);
-            put("password", password);
         }};
     }
 

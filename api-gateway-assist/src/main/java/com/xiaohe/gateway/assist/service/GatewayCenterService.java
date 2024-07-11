@@ -67,17 +67,17 @@ public class GatewayCenterService {
         return result.getData();
     }
 
-    /**
-     * 从网关中心拉取Redis配置
-     * @param address
-     * @return
-     */
-    public Map<String, String> queryRedisConfig(String address) {
-        String resultStr = HttpUtil.post(address + "/wg/admin/register/queryRedisConfig", "", 5550);
-        Result<Map<String, String>> result = JSON.parseObject(resultStr, new TypeReference<Result<Map<String, String>>>() {});
-        if (!"0000".equals(result.getCode()))
-            throw new GatewayException("从网关中心拉取Redis配置信息异常");
-        return result.getData();
-    }
+//    /**
+//     * 从网关中心拉取Redis配置
+//     * @param address
+//     * @return
+//     */
+//    public Map<String, String> queryRedisConfig(String address) {
+//        String resultStr = HttpUtil.post(address + "/wg/admin/register/queryRedisConfig", "", 5550);
+//        Result<Map<String, String>> result = JSON.parseObject(resultStr, new TypeReference<Result<Map<String, String>>>() {});
+//        if (!"0000".equals(result.getCode()))
+//            throw new GatewayException("从网关中心拉取Redis配置信息异常");
+//        return result.getData();
+//    }
 
 }

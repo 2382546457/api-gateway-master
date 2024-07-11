@@ -38,7 +38,7 @@ public class ApplicationSystemServiceImpl extends ServiceImpl<ApplicationSystemM
 
     @Override
     public ApplicationSystemRichInfo queryAapplicationSystemRichInfo(String gatewayId, String systemId) {
-        List<String> systemIdList = Collections.emptyList();
+        List<String> systemIdList = new ArrayList<>();
         // 如果指定了 systemId, 就查找指定，没指定就查全部
         if (StringUtils.hasText(systemId)) {
             systemIdList.add(systemId);
