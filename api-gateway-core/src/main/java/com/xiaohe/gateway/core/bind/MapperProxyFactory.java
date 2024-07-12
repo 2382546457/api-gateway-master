@@ -27,23 +27,23 @@ public class MapperProxyFactory {
     }
 
     public IGenericReference newInstance(GatewaySession gatewaySession) {
-        IGenericReference reference = this.genericReferenceCache.get(uri);
-        if (reference != null) {
-            return reference;
-        }
-        HttpStatement httpStatement = gatewaySession.getConfiguration().getHttpStatement(uri);
-        // 获取代理
-        MapperProxy genericReferenceProxy = new MapperProxy(gatewaySession, uri);
-        // 创建接口
-        InterfaceMaker interfaceMaker = new InterfaceMaker();
-        interfaceMaker.add(new Signature(httpStatement.getMethodName(), Type.getType(String.class), new Type[]{Type.getType(String.class)}), null);
-        Class<?> interfaceClass = interfaceMaker.create();
-        // 创建代理, 让代理对象 implements IGenericReference、interfaceMaker.create()，那么就可以将创建的代理对象转换为 IGenericReference 统一管理
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(Object.class);
-        enhancer.setInterfaces(new Class[]{ IGenericReference.class, interfaceClass});
-        enhancer.setCallback(genericReferenceProxy);
-        return (IGenericReference) enhancer.create();
+        return genericReferenceCache.computeIfAbsent(uri, k -> {
+            HttpStatement httpStatement = gatewaySession.getConfiguration().getHttpStatement(uri);
+            // 泛化调用
+            MapperProxy genericReferenceProxy = new MapperProxy(gatewaySession, uri);
+            // 创建接口
+            InterfaceMaker interfaceMaker = new InterfaceMaker();
+            interfaceMaker.add(new Signature(httpStatement.getMethodName(), Type.getType(String.class), new Type[]{Type.getType(String.class)}), null);
+            Class<?> interfaceClass = interfaceMaker.create();
+            // 代理对象
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(Object.class);
+            // IGenericReference 统一泛化调用接口
+            // interfaceClass    根据泛化调用注册信息创建的接口，建立 http -> rpc 关联
+            enhancer.setInterfaces(new Class[]{IGenericReference.class, interfaceClass});
+            enhancer.setCallback(genericReferenceProxy);
+            return (IGenericReference) enhancer.create();
+        });
     }
 
 }

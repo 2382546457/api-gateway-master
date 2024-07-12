@@ -23,4 +23,4 @@ api-gateway-sdk:
   systemId: api-gateway-test-provider
   systemName: 网关sdk测试工程
   gatewayId: api-gateway-g4
-  systemRegistry: zookeeper://192.168.1.102:2181
+  systemRegistry: zookeeper://localhost:2181

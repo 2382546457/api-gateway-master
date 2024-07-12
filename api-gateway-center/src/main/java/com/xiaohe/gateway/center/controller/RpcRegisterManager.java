@@ -127,9 +127,12 @@ public class RpcRegisterManager {
             if (applicationInterfaceMethod == null) {
                 applicationInterfaceMethod = new ApplicationInterfaceMethod();
                 applicationInterfaceMethod.setCreateTime(new Date());
+
             }
-            applicationInterfaceMethod.setInterfaceId(interfaceId);
+            applicationInterfaceMethod.setUpdateTime(new Date());
             applicationInterfaceMethod.setSystemId(systemId);
+            applicationInterfaceMethod.setInterfaceId(interfaceId);
+            applicationInterfaceMethod.setMethodId(methodId);
             applicationInterfaceMethod.setMethodName(methodName);
             applicationInterfaceMethod.setParameterType(parameterType);
             applicationInterfaceMethod.setUri(uri);

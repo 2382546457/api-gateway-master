@@ -10,15 +10,16 @@ import org.apache.dubbo.config.annotation.Service;
 
 @Service(version = "1.0.0")
 @ApiProducerClazz(
-        interfaceName = "com.xiaohe.gateway.rpc.iml.ActivityBooth",
+        interfaceName = "活动服务",
         interfaceVersion = "1.0.0"
 )
 public class ActivityBooth implements IActivityBooth {
 
     @Override
     @ApiProducerMethod(
-            uri = "",
-            methodName = "com.xiaohe.gateway.rpc.iml.ActivityBooth.sayHi"
+            uri = "/sayHi",
+            methodName = "sayHi方法",
+            httpCommandType = "GET"
     )
     public String sayHi(String str) {
         return "hi " + str + " by api-gateway-test-provider";

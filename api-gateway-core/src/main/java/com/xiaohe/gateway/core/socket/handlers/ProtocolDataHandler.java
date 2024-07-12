@@ -53,6 +53,7 @@ public class ProtocolDataHandler extends BaseHandler<FullHttpRequest> {
             ctx.writeAndFlush(response);
 
         } catch (Exception e) {
+            e.printStackTrace();
             // 3. 封装返回异常结果
             DefaultFullHttpResponse response = new ResponseParser().parse(GatewayResultMessage.buildError(AgreementConstants.ResponseCode._502.getCode(), "网关协议调用失败！" + e.getMessage()));
             channel.writeAndFlush(response);

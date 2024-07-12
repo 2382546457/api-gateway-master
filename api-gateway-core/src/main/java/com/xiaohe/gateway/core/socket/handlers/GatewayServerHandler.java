@@ -33,7 +33,6 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
             RequestParser requestParser = new RequestParser(request);
             String uri = requestParser.getUri();
             if (uri == null) return ;
-            Map<String, Object> parse = requestParser.parse();
 
 
             // 2. 保存信息, 将 HttpStatement 保存在 Channel 中
